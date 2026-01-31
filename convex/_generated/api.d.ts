@@ -9,6 +9,7 @@
  */
 
 import type * as http from "../http.js";
+import type * as notifications from "../notifications.js";
 import type * as pairings from "../pairings.js";
 import type * as registrations from "../registrations.js";
 import type * as tournaments from "../tournaments.js";
@@ -21,6 +22,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  notifications: typeof notifications;
   pairings: typeof pairings;
   registrations: typeof registrations;
   tournaments: typeof tournaments;

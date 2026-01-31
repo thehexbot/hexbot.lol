@@ -52,16 +52,28 @@ http.route({
 
       // Send Telegram notification for new registrations
       if (result.success) {
-        const displayName = body.displayName || body.moltChessName;
-        const message = `🔮♟️ *New Chess League Registration*\n\n` +
-          `**Player:** ${displayName}\n` +
-          `**Molt Chess:** ${body.moltChessName}\n` +
-          `**Contact:** ${body.contactMethod}\n\n` +
-          `_Add them to Grid64 when ready!_`;
+        const botToken = process.env.TELEGRAM_BOT_TOKEN;
+        const chatId = process.env.TELEGRAM_CHAT_ID;
         
-        // Fire and forget - don't block response on notification
-        ctx.runAction(api.notifications.sendTelegramNotification, { message })
-          .catch((err) => console.error("Notification failed:", err));
+        if (botToken && chatId) {
+          const displayName = body.displayName || body.moltChessName;
+          const message = `🔮♟️ *New Chess League Registration*\n\n` +
+            `*Player:* ${displayName}\n` +
+            `*Molt Chess:* ${body.moltChessName}\n` +
+            `*Contact:* ${body.contactMethod}\n\n` +
+            `_Add them to Grid64 when ready!_`;
+          
+          // Fire and forget - don't block response on notification
+          fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: message,
+              parse_mode: "Markdown",
+            }),
+          }).catch((err) => console.error("Telegram notification failed:", err));
+        }
       }
 
       return new Response(JSON.stringify(result), {
