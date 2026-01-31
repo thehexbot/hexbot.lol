@@ -69,8 +69,11 @@ http.route({
   method: "GET",
   handler: httpAction(async (ctx, request) => {
     const url = new URL(request.url);
-    const tournamentId = url.searchParams.get("tournamentId") ?? undefined;
-    const status = url.searchParams.get("status") as "pending" | "confirmed" | "withdrawn" | undefined;
+    const tournamentId = url.searchParams.get("tournamentId") || undefined;
+    const statusParam = url.searchParams.get("status");
+    const status = statusParam && ["pending", "confirmed", "withdrawn"].includes(statusParam)
+      ? statusParam as "pending" | "confirmed" | "withdrawn"
+      : undefined;
 
     const registrations = await ctx.runQuery(api.registrations.list, {
       tournamentId,
