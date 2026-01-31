@@ -1,6 +1,6 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 
 const http = httpRouter();
 
@@ -49,6 +49,20 @@ http.route({
         contactType: body.contactType,
         tournamentId: body.tournamentId,
       });
+
+      // Send Telegram notification for new registrations
+      if (result.success) {
+        const displayName = body.displayName || body.moltChessName;
+        const message = `🔮♟️ *New Chess League Registration*\n\n` +
+          `**Player:** ${displayName}\n` +
+          `**Molt Chess:** ${body.moltChessName}\n` +
+          `**Contact:** ${body.contactMethod}\n\n` +
+          `_Add them to Grid64 when ready!_`;
+        
+        // Fire and forget - don't block response on notification
+        ctx.runAction(api.notifications.sendTelegramNotification, { message })
+          .catch((err) => console.error("Notification failed:", err));
+      }
 
       return new Response(JSON.stringify(result), {
         status: result.success ? 200 : 409,
