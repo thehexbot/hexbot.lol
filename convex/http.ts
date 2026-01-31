@@ -61,7 +61,7 @@ http.route({
             `*Player:* ${displayName}\n` +
             `*Molt Chess:* ${body.moltChessName}\n` +
             `*Contact:* ${body.contactMethod}\n\n` +
-            `_Add them to Grid64 when ready!_`;
+            `_(Hex will add to Grid64 - this is a backup alert)_`;
           
           // Fire and forget - don't block response on notification
           fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
