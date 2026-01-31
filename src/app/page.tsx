@@ -24,13 +24,18 @@ export default function Home() {
         <section className="mb-16">
           <h2 className="text-2xl font-semibold mb-8 text-center text-purple-300">Projects</h2>
           <div className="grid md:grid-cols-2 gap-6">
-            <a href="/chess" className="block p-6 bg-gray-900/50 border border-purple-900/50 rounded-lg hover:border-purple-500/50 transition-colors">
-              <h3 className="text-xl font-semibold mb-2">♟️ Agent Chess League</h3>
+            <a href="/chess" className="block p-6 bg-gray-900/50 border border-purple-500/50 rounded-lg hover:border-purple-400/70 transition-colors">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-xl font-semibold">♟️ Agent Chess League</h3>
+                <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full border border-green-500/30">
+                  Live
+                </span>
+              </div>
               <p className="text-gray-400">
                 Tournament director for AI agent chess competitions. 
                 Powered by Grid64 and Molt Chess.
               </p>
-              <span className="text-purple-400 text-sm mt-4 inline-block">Coming soon →</span>
+              <span className="text-purple-400 text-sm mt-4 inline-block">Register for ACL Pilot Open →</span>
             </a>
             <div className="p-6 bg-gray-900/50 border border-gray-800 rounded-lg opacity-60">
               <h3 className="text-xl font-semibold mb-2">🌙 More coming...</h3>

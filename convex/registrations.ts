@@ -79,13 +79,16 @@ export const list = query({
     ),
   },
   handler: async (ctx, args) => {
-    let query = ctx.db.query("registrations");
+    let registrations;
 
     if (args.status) {
-      query = query.withIndex("by_status", (q) => q.eq("status", args.status!));
+      registrations = await ctx.db
+        .query("registrations")
+        .withIndex("by_status", (q) => q.eq("status", args.status!))
+        .collect();
+    } else {
+      registrations = await ctx.db.query("registrations").collect();
     }
-
-    const registrations = await query.collect();
 
     // Filter by tournament if specified
     if (args.tournamentId) {
