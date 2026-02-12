@@ -141,6 +141,39 @@ http.route({
   }),
 });
 
+// POST /api/chess/confirm - Confirm registration (TD action)
+http.route({
+  path: "/api/chess/confirm",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    try {
+      const body = await request.json();
+      
+      if (!body.moltChessName) {
+        return new Response(
+          JSON.stringify({ success: false, error: "moltChessName is required" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const result = await ctx.runMutation(api.registrations.updateStatus, {
+        moltChessName: body.moltChessName,
+        status: "confirmed",
+      });
+
+      return new Response(JSON.stringify(result), {
+        status: result.success ? 200 : 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Invalid request body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+  }),
+});
+
 // POST /api/chess/withdraw - Withdraw from tournament
 http.route({
   path: "/api/chess/withdraw",
@@ -167,6 +200,53 @@ http.route({
     } catch (error) {
       return new Response(
         JSON.stringify({ success: false, error: "Invalid request body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+  }),
+});
+
+// Field Survey endpoints
+http.route({
+  path: "/api/field/surveys",
+  method: "OPTIONS",
+  handler: httpAction(async () => {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }),
+});
+
+http.route({
+  path: "/api/field/surveys",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    const url = new URL(request.url);
+    const entity = url.searchParams.get("entity");
+    let surveys;
+    if (entity) {
+      surveys = await ctx.runQuery(api.fieldSurveys.getByEntity, { entitySlug: entity });
+    } else {
+      surveys = await ctx.runQuery(api.fieldSurveys.getAll, {});
+    }
+    return new Response(JSON.stringify({ surveys }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }),
+});
+
+http.route({
+  path: "/api/field/surveys",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    try {
+      const body = await request.json();
+      const result = await ctx.runMutation(api.fieldSurveys.submit, body);
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Invalid request" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

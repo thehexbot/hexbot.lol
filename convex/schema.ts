@@ -38,6 +38,20 @@ export default defineSchema({
     .index("by_player", ["whiteName"])
     .index("by_player_black", ["blackName"]),
 
+  fieldSurveys: defineTable({
+    entitySlug: v.string(),
+    locationLetter: v.string(),
+    locationName: v.string(),
+    responses: v.any(),
+    photos: v.optional(v.array(v.string())),
+    notes: v.optional(v.string()),
+    gps: v.optional(v.object({ lat: v.number(), lng: v.number(), accuracy: v.optional(v.number()) })),
+    submittedAt: v.number(),
+    submittedBy: v.optional(v.string()),
+  })
+    .index("by_entity", ["entitySlug"])
+    .index("by_entity_location", ["entitySlug", "locationLetter"]),
+
   tournaments: defineTable({
     externalId: v.string(),
     name: v.string(),

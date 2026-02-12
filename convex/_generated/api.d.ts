@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as fieldSurveys from "../fieldSurveys.js";
 import type * as http from "../http.js";
 import type * as notifications from "../notifications.js";
 import type * as pairings from "../pairings.js";
@@ -21,6 +22,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  fieldSurveys: typeof fieldSurveys;
   http: typeof http;
   notifications: typeof notifications;
   pairings: typeof pairings;
